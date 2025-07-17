@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css')}}">
+</head>
+<body>
+    <h1>Recipe Finder</h1>
+    <p style="text-align: center;">
+        <a href="{{ url_for('random_meal') }}">
+            🎲 Show Random Meal
+        </a>
+    </p>
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search for a meal...">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if search %}
+        <p style="text-align: center;">You searched for: <strong> {{ search }}</strong></p>
+    {% endif %}
+
+    <p style="text-align: center;">
+        <a href="{{ url_for('view_favorites')}}">💖 View My Favorites</a>
+    </p>
+
+    <!-- Show results if meals were found -->
+    {% if meals %}
+        <div class="results">
+            {% for meal in meals%}
+                <div class="meal">
+                    
+                    <img src="{{ meal['strMealThumb'] }}" alt="{{ meal['strMeal'] }}">
+                    <h3>
+                        <a href="https://www.themealdb.com/meal/{{ meal['idMeal']}}" target="_blank">
+                        {{ meal['strMeal']}}  
+                        </a>
+                    </h3>
+                    <p><strong>Category:</strong> {{ meal['strCategory'] }} |
+                        <strong>Area:</strong> {{ meal['strArea'] }}</p>
+                    <p>{{ meal['strInstructions'][:200] }}...</p>  <!-- Only shows first 200 characters -->
+                    <form method="POST" action="{{ url_for('favorite')}}">
+                        <input type="hidden" name="meal_id" value="{{ meal['idMeal'] }}">
+                        <input type="hidden" name="meal_name" value="{{ meal['strMeal'] }}">
+                        <input type="hidden" name="meal_thumb" value="{{ meal['strMealThumb'] }}">
+                        <input type="hidden" name="category" value="{{ meal['strCategory'] }}">
+                        <input type="hidden" name="area" value="{{ meal['strArea'] }}">
+                        {% set ingredients_list = [] %}
+                        {% for i in range(1, 21) %}
+                            {% set ingredient = meal['strIngredient' ~ i] %}
+                            {% set measure = meal['strMeasure' ~ i] %}
+                            {% if ingredient and ingredient.strip() %}
+                                {% set _ = ingredients_list.append(measure ~ '' ~ ingredient) %}
+                            {% endif %}
+                        {% endfor %}
+                        <input type="hidden" name="ingredients" value="{{ ingredients_list | join(', ') }}">
+                        {% if meal['idMeal'] in favorited_ids %}
+                            <p class="already-favorited" style="color: crimson">❤ Already Favorited</p>
+                        {% else %}
+                            <button type="submit" style="margin-top: 10px;">❤ Favorite</button>
+                        {% endif %}
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('home', search=search, page=page-1)}}">Previous</a>
+            {% endif %}
+            Page {{ page }} of {{ total_pages }}
+            {% if page < total_pages %}
+                <a href="{{ url_for('home', search=search, page=page+1) }}">Next</a>
+            {% endif %}
+        </div>
+        <p style="text-align: center;">
+            <a href="{{ url_for('print_favorites') }}">🖨 Printable View</a>
+        </p>
+    <!-- If meals is None but user searched, say no results -->
+    {% elif search %}
+        <div class="no-results">
+            <p>No recipes found for "{{ search }}"</p>
+        </div>    
+    {% endif %}
+</body>
+</html>

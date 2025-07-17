@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorite Recipes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='favorites.css')}}">
+</head>
+<body>
+    <h1>My Favorite Recipes</h1>
+    <form method="get" action="{{ url_for('view_favorites') }}">
+        <label for="category">Filter by Category:</label>
+        <select name="category" id="category">
+            <option value="">All</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+
+        <p>
+            <a href="{{ url_for('export_pdf') }}" class="button">
+                📄 Export Favorites as PDF
+            </a>
+        </p>
+
+        <label for="area">Filter by Area:</label>
+        <select name="area" id="area">
+            <option value="">All</option>
+            {% for a in areas %}
+                <option value="{{ a }}" {% if a == selected_area %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+    {% if favorites %}
+    <div class="favorites">
+        {% for meal_id, meal_name, meal_thumb, ingredients in favorites %}
+            <div class="card">
+                <img src="{{ meal_thumb }}" alt="{{ meal_name }}">
+                <h3>{{ meal_name }}</h3>
+                <p><strong>ingredients:</strong>{{ ingredients }}</p>
+                <a href="https://www.themealdb.com/meal/{{ meal_id }}" target="_blank" class="button">
+                    View Recipe
+                </a>
+                <form method="POST" action="{{ url_for('remove_favorite') }}">
+                    <input type="hidden" name="meal_id" value="{{ meal_id }}">
+                    <button type="submit" class="button" style="background-color: #888;">Remove</button>
+                </form>
+                <form method="POST" action="{{ url_for('save_note')}}">
+                    <input type="hidden" name="meal_id" value="{{ meal_id }}">
+                    <textarea name="notes" rows="3" placeholder="Write a note...">{{ meal_notes.get(meal_id, '')}}</textarea>
+                    <button type="submit" class="button" style="background-color: #2b8a3e;">Save Note</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>No favorites yet.</p>
+    {% endif %}
+</body>
+</html>

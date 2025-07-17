@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printable Favorites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='print_favorites.css')}}">
+</head>
+<body>
+    <h1>My Favorite Recipes</h1>
+    <button onclick="window.print()">🖨 Print This Page</button>
+    {% for meal in favorites %}
+        <div class="meal">
+            <h2>{{ meal[2] }}</h2>
+            <img src="{{ meal[3] }}" alt="{{ meal[2] }}">
+            <p><strong>Category:</strong> {{ meal[4] }} | <strong>Area:</strong> {{ meal[5] }}</p>
+            <p><strong>Ingredients:</strong> {{ meal['ingredients'] }}</p>
+            <p><a href="https://www.themealdb.com/meal/{{ meal[1] }}" target="_blank">View Full Recipe</a></p>
+        </div>
+    {% endfor %}
+</body>
+</html>

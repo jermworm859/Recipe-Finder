@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fefefe;
+    margin: 0;
+    padding:0 20px;
+}
+h1 {
+    text-align: center;
+    margin-top: 30px;
+}
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px 0 0 8px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff5c5c;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #e64848;
+}
+.results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.meal{
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+.meal:hover {
+    transform: scale(1.02);
+}
+.meal img{
+    width: 20%;
+    border-radius: 8px;
+}
+.meal h3{
+    margin: 10px 0 5px;
+}
+.meal p {
+    font-size: 14px;
+    color: #444;
+}
+.no-results {
+    text-align: center;
+    color: #888;
+    margin-top: 40px;
+}
+.already-favorited{
+    font-weight: bold;
+    margin-top: 10px;
+}
